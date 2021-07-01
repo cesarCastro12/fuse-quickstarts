@@ -1,0 +1,42 @@
+# General configuration
+nameOverride: &nameOverride fuse-quickstarts
+partOf: &partOf the-open-shifter
+repository: &repository
+  url: https://github.com/cesarCastro12/fuse-quickstarts.git
+  ref: fuse-7.6
+  path: /spring-boot/rest_consumer_rest_java/
+runtime: &runtime
+  name: fuse7-java-openshift
+  version: 1.8
+healthcheck: &healthcheck
+  httpGet:
+    path: /health
+  initialDelaySeconds: 10
+  periodSeconds: 3
+environments: &environments
+  - name: HELLO_NAME
+    value: "World"
+
+# Deployment as code con estrategia Serverless
+serverless:
+  nameOverride: *nameOverride
+  partOf: *partOf
+  repository: *repository
+  runtime: *runtime
+  envs: *environments
+  readinessProbe: *healthcheck
+  livenessProbe: *healthcheck
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 50m
+      memory: 50Mi
+
+# Pipeline as code
+java:
+  nameOverride: *nameOverride
+  partOf: *partOf
+  repository: *repository
+  runtime: *runtime
